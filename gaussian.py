@@ -22,23 +22,26 @@ def ExponentialSampling(_sigma_tr):
 	y = DiscR * np.sin(angle)
 	return (x, y)
 
-#Test 2D gaussian random number generation	
-def GaussianSampling(mu_x, sigma_x, mu_y, sigma_y, rho):
+#Generate gaussian random number
+def GaussianSampling():
 	u1 = rnd.random()
 	u2 = rnd.random()
 	r = np.sqrt(-2.0 * np.log(u1))
 	theta = 2.0 * np.pi * u2
 	nx = r * np.cos(theta)
-	ny = r * np.sin(theta)
-	x = sigma_x * nx + mu_x
-	y = sigma_y * (rho * nx + np.sqrt(1.0 - rho * rho) * ny) + mu_y
+	return nx
+
+#2D gaussian random number
+def Gaussian2DSampling(mu_x, sigma_x, mu_y, sigma_y, rho):
+	sample_x = GaussianSampling()
+	sample_y = GaussianSampling()
+	x = sigma_x * sample_x + mu_x	
+	y = sigma_y * (rho * sample_x + np.sqrt(1.0 - rho * rho) * sample_y) + mu_y
 	return (x, y)
 
 
 array1 = [ ]
 array2 = [ ]
-array3 = [ ]
-array4 = [ ]
 
 
 total = len(sys.argv)
@@ -51,10 +54,9 @@ sampleNum = int(sys.argv[1])
 for i in range(sampleNum):
 	#Uniform Random sampling
 	#x, y = RandomSampling()
-	rx, ry = GaussianSampling(0.0, 1.0, 0.0, 1.0, 0.75)
+	rx, ry = Gaussian2DSampling(0.0, 2.0, 0.0, 1.0, -0.75)
 	array1.append(rx)
 	array2.append(ry)
-
 
 mean_array1 = np.mean(array1)
 mean_array2 = np.mean(array2)
@@ -66,7 +68,6 @@ print ('Sample Mean (', "%.5f" %mean_array1, "%.5f" %mean_array2, ')')
 #Figure configuration
 plt.figure(figsize = (10, 10))
 plt.plot(array1, array2, 'r.')
-plt.plot(array3, array4, 'g.')
 plt.title('Distribution Plot')
 plt.grid(True)
 plt.axis([-10.0, 10.0, -10.0, 10.0])
