@@ -35,7 +35,6 @@ def Gaussian3DSampling(mu_x, sigma_x, mu_y, sigma_y, mu_z, sigma_z, alpha, beta,
 				   np.sqrt( (1.0 - beta * beta - temp * temp / (1.0 - alpha * alpha) ) ) * sample_z ) + mu_z
 	return (x, y, z)
 
-
 total = len(sys.argv)
 cmdargs = str(sys.argv)
 
@@ -47,7 +46,7 @@ array2 = [ ]
 array3 = [ ]
 
 for i in range(sampleNum):
-	rx, ry, rz = Gaussian3DSampling(0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0)
+	rx, ry, rz = Gaussian3DSampling(0.0, 2.0, 0.0, 2.0, 0.0, 2.0, 0.0, 0.0, 0.0)
 	array1.append(rx)
 	array2.append(ry)
 	array3.append(rz)
