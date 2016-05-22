@@ -1,1 +1,9 @@
 In this repo, I list some basic python template for me to grab some code base to use.
+
+gaussian.py : A basic template to generate 2d gaussian and random sample
+
+gaussian3d.py : It can generate 3d gaussian sample
+
+rndnum.py : To plot and test the exponential samples I use for rendering
+
+lls.py : A simple linear least square code to visualize the fitted result and cost trend 
