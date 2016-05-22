@@ -82,8 +82,7 @@ if __name__ == '__main__':
 	cost_log.append(cost)
 
 	iteration = 0
-	TotalSample = sampleNum
-
+	
 	plt.figure(1, figsize = (10, 10))
 	plt.plot(data_x, data_y, 'r.')
 
@@ -92,7 +91,7 @@ if __name__ == '__main__':
 		GradientSum_a = 0.0
 		GradientSum_b = 0.0
 		
-		for datanum in range(TotalSample):	
+		for datanum in range(sampleNum):	
 			#Compute gradient
 			G = 0.0
 			if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
