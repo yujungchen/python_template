@@ -7,4 +7,4 @@ gaussian3d.py : It can generate 3d gaussian sample
 rndnum.py : To plot and test the exponential samples I use for rendering
 
 lls.py : A simple linear least square code based on batch gradient descent (mode 1) and stochastic gradient descent (mode 2) to visualize the fitted result and cost trend
-		 usage: python/python3 lls.py [data num] [max iteration] [mode]
+usage: python/python3 lls.py [data num] [max iteration] [mode]
