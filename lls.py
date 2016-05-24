@@ -47,7 +47,7 @@ def ComputeCost(x, y, m, b):
 	for idx in range(num):
 		#print(idx, '%.3f' % x[idx], '%.3f' % y[idx])
 		ErrorTerm = y[idx] - m * x[idx] - b
-		cost = cost + ErrorTerm
+		cost = cost + ErrorTerm * ErrorTerm
 
 	cost = cost / num
 	return cost
@@ -62,8 +62,9 @@ if __name__ == '__main__':
 	# Number of samples
 	sampleNum = int(sys.argv[1])
 	iteration_cnt = int(sys.argv[2])
-	epsilon = (1.0 / sampleNum)  / 100000.0
-	print "Stopping criteria:", epsilon
+	#epsilon = (1.0 / sampleNum)  / 100000.0
+	#print ("Stopping criteria:", epsilon)
+	prev_cost = 0
 
 	# Generate pesudo data
 	for i in range(sampleNum):
@@ -104,10 +105,13 @@ if __name__ == '__main__':
 		cost = ComputeCost(data_x, data_y, a, b)
 		cost_log.append(cost)
 		# Stop gradient descent at some epsilon
-		if cost < epsilon : 
-			print "Stop gradient descent at iteration", iteration
-			break
+		
+		if iteration > 1 :
+			if abs(cost - prev_cost) < 10e-15 : 
+				print ("Stop gradient descent at iteration", iteration)
+				break
 
+		prev_cost = cost
 
 	# Fitted parameter
 	y = a * x + b
