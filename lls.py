@@ -4,6 +4,7 @@ import numpy as np
 import random as rnd
 import matplotlib.pyplot as plt
 import sys
+import time
 
 # Test 2D radnom number generation
 def RandomSampling():
@@ -62,6 +63,7 @@ if __name__ == '__main__':
 	# Number of samples
 	sampleNum = int(sys.argv[1])
 	iteration_cnt = int(sys.argv[2])
+	mode = int(sys.argv[3])
 	#epsilon = (1.0 / sampleNum)  / 100000.0
 	#print ("Stopping criteria:", epsilon)
 	prev_cost = 0
@@ -87,31 +89,59 @@ if __name__ == '__main__':
 	plt.figure(1, figsize = (10, 10))
 	plt.plot(data_x, data_y, 'r.')
 
-	for iteration in range(iteration_cnt):
-	#	print(iteration)
-		GradientSum_a = 0.0
-		GradientSum_b = 0.0
+	if mode == 1 :
+		print ("Stochastic gradient descent")
+		t0 = time.clock()
+		for iteration in range(iteration_cnt) :
+			for datanum in range(sampleNum):
+				G = 0.0
+				if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
+					G = (data_y[datanum] - (a * data_x[datanum] + b))
+			
+				a = a + alpha *	G * data_x[datanum]
+				b = b + alpha *	G
+			
+			cost = ComputeCost(data_x, data_y, a, b)
+			cost_log.append(cost)
+			
+			if iteration > 1 :
+				if abs(cost - prev_cost) < 10e-15 : 
+					print ("Stop gradient descent at iteration", iteration)
+					break
+			prev_cost = cost
+		print ("Total time", '%.5f' % (time.clock() - t0), "sec")
+	elif mode == 2 :
+		print ("Batch gradient descent")
+		t0 = time.clock()
+		for iteration in range(iteration_cnt) :
+		#	print(iteration)
+			GradientSum_a = 0.0
+			GradientSum_b = 0.0
 		
-		for datanum in range(sampleNum):	
-			#Compute gradient
-			G = 0.0
-			if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
-				G = (data_y[datanum] - (a * data_x[datanum] + b))
-				GradientSum_a = GradientSum_a + G * data_x[datanum]
-				GradientSum_b = GradientSum_b + G
+			for datanum in range(sampleNum):	
+				#Compute gradient
+				G = 0.0
+				if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
+					G = (data_y[datanum] - (a * data_x[datanum] + b))
+					GradientSum_a = GradientSum_a + G * data_x[datanum]
+					GradientSum_b = GradientSum_b + G
 		
-		a = a + alpha * GradientSum_a
-		b = b + alpha * GradientSum_b
-		cost = ComputeCost(data_x, data_y, a, b)
-		cost_log.append(cost)
-		# Stop gradient descent at some epsilon
+			a = a + alpha * GradientSum_a
+			b = b + alpha * GradientSum_b
+			cost = ComputeCost(data_x, data_y, a, b)
+			cost_log.append(cost)
+			# Stop gradient descent at some epsilon
 		
-		if iteration > 1 :
-			if abs(cost - prev_cost) < 10e-15 : 
-				print ("Stop gradient descent at iteration", iteration)
-				break
+			if iteration > 1 :
+				if abs(cost - prev_cost) < 10e-15 : 
+					print ("Stop gradient descent at iteration", iteration)
+					break
+			prev_cost = cost
+		print ("Total time", '%.5f' % (time.clock() - t0), "sec")
+	else :
+		print ("Please input the correct GD mode")
+		sys.exit(0)
 
-		prev_cost = cost
 
 	# Fitted parameter
 	y = a * x + b
