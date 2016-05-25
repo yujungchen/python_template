@@ -59,8 +59,6 @@ def ComputeCost(Sample, m, b):
 	return cost
 
 
-
-
 # Main function
 if __name__ == '__main__':
 	data_x = [ ]
