@@ -6,6 +6,11 @@ import matplotlib.pyplot as plt
 import sys
 import time
 
+class Sample :
+	def __init__(self, _x, _y) :
+		self.x = _x
+		self.y = _y
+
 # Test 2D radnom number generation
 def RandomSampling():
 	x = rnd.random() - 0.5
@@ -41,22 +46,26 @@ def Gaussian2DSampling(mu_x, sigma_x, mu_y, sigma_y, rho):
 	return (x, y)
 
 # Compute cost
-def ComputeCost(x, y, m, b):
+def ComputeCost(Sample, m, b):
 	cost = 0
-	num = len(x)
+	num = len(Sample)
 
 	for idx in range(num):
 		#print(idx, '%.3f' % x[idx], '%.3f' % y[idx])
-		ErrorTerm = y[idx] - m * x[idx] - b
+		ErrorTerm = Sample[idx].y - m * Sample[idx].x - b
 		cost = cost + ErrorTerm * ErrorTerm
 
 	cost = cost / num
 	return cost
 
+
+
+
 # Main function
 if __name__ == '__main__':
 	data_x = [ ]
 	data_y = [ ]
+	SynSample = [ ]
 	cost_log = [ ]
 	cmdargs = str(sys.argv)
 
@@ -72,16 +81,17 @@ if __name__ == '__main__':
 	for i in range(sampleNum):
 		#Uniform Random sampling
 		rx, ry = Gaussian2DSampling(0.0, 1.0, 1.0, 2.0, 0.75)
+		SynSample.append(Sample(rx, ry))
 		data_x.append(rx)
 		data_y.append(ry)
+
 
 	# Initialize parameters
 	a = 0.0
 	b = 0.0
 	alpha = 0.0001	#Learning rate
 	x = np.arange(-100, 100)
-
-	cost = ComputeCost(data_x, data_y, a, b)
+	cost = ComputeCost(SynSample, a, b) 
 	cost_log.append(cost)
 
 	iteration = 0
@@ -93,15 +103,16 @@ if __name__ == '__main__':
 		print ("Stochastic gradient descent")
 		t0 = time.clock()
 		for iteration in range(iteration_cnt) :
+			#np.random.shuffle(SynSample)
 			for datanum in range(sampleNum):
 				G = 0.0
-				if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
-					G = (data_y[datanum] - (a * data_x[datanum] + b))
+				if SynSample[datanum].x < 10.0 and SynSample[datanum].x > -10.0 and SynSample[datanum].y < 10.0 and SynSample[datanum].y > -10.0 :
+					G = (SynSample[datanum].y - (a * SynSample[datanum].x + b))
 			
-				a = a + alpha *	G * data_x[datanum]
+				a = a + alpha *	G * SynSample[datanum].x
 				b = b + alpha *	G
 			
-			cost = ComputeCost(data_x, data_y, a, b)
+			cost = ComputeCost(SynSample, a, b)
 			cost_log.append(cost)
 			
 			if iteration > 1 :
@@ -121,14 +132,14 @@ if __name__ == '__main__':
 			for datanum in range(sampleNum):	
 				#Compute gradient
 				G = 0.0
-				if data_x[datanum] < 10.0 and data_x[datanum] > -10.0 and data_y[datanum] < 10.0 and data_y[datanum] > -10.0 :
-					G = (data_y[datanum] - (a * data_x[datanum] + b))
-					GradientSum_a = GradientSum_a + G * data_x[datanum]
+				if SynSample[datanum].x < 10.0 and SynSample[datanum].x > -10.0 and SynSample[datanum].y < 10.0 and SynSample[datanum].y > -10.0 :
+					G = (SynSample[datanum].y - (a * SynSample[datanum].x + b))
+					GradientSum_a = GradientSum_a + G * SynSample[datanum].x
 					GradientSum_b = GradientSum_b + G
 		
 			a = a + alpha * GradientSum_a
 			b = b + alpha * GradientSum_b
-			cost = ComputeCost(data_x, data_y, a, b)
+			cost = ComputeCost(SynSample, a, b)
 			cost_log.append(cost)
 			# Stop gradient descent at some epsilon
 		
@@ -141,6 +152,9 @@ if __name__ == '__main__':
 	else :
 		print ("Please input the correct GD mode")
 		sys.exit(0)
+
+	cost = ComputeCost(SynSample, a, b) 
+	print("Converged cost", '%.5f' % cost)
 
 
 	# Fitted parameter
