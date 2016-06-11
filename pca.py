@@ -150,19 +150,19 @@ if __name__ == '__main__':
 	# Compute Eigenvector and Eigenvalue
 	eig_val, eig_vec = np.linalg.eig(Cov_Mat.T)
 
-	for i in range(len(eig_val)) :
-		eigvec_sc = eig_vec[:, i].reshape(1, 3).T
-		print('Eigen Vector {} : \n{}'.format(i + 1, eigvec_sc))
-		print('Eigen Value {} : {}'.format(i + 1, eig_val[i]))
-		print(40 * '-')
+	#for i in range(len(eig_val)) :
+	#	eigvec_sc = eig_vec[:, i].reshape(1, 3).T
+	#	print('Eigen Vector {} : \n{}'.format(i + 1, eigvec_sc))
+	#	print('Eigen Value {} : {}'.format(i + 1, eig_val[i]))
+	#	print(40 * '-')
 		
 	
 	eig_pairs = [(np.abs(eig_val[i]), eig_vec[:,i]) for i in range(len(eig_val))]
 	eig_pairs.sort()
-	#eig_pairs.reverse()
+	eig_pairs.reverse()
 
-	for i in eig_pairs:
-		print(i[0])
+	#for i in eig_pairs:
+	#	print(i[0], i[1])
 
 	# Visualize Eigen Vector of Covaraince
 	ax.plot([mean_vec.x], [mean_vec.y], [mean_vec.z], 'o', markersize = 10, color = 'blue', alpha = 0.5)
@@ -174,21 +174,22 @@ if __name__ == '__main__':
 	#	normp.testing.assert_array_almost_equal(1.0, np.linalg.norm(ev))
 	
 	Proj_Mat = np.hstack((eig_pairs[0][1].reshape(3,1), eig_pairs[1][1].reshape(3,1)))
-	print(Proj_Mat)
+	# print(Proj_Mat)
 
 	transformed = Proj_Mat.T.dot(SampleArray)
 
-	plt.title('Simple Linear Least Square')
+	plt.title('Sample Visualization')
 	plt.grid(True)
 	plt.axis([-7.0, 7.0, -7.0, 7.0])
 	ax.set_zlim(-7, 7)
 
 	plt.figure(2)
 	plt.plot(transformed[0, :], transformed[1, :], 'o', markersize = 7, color = 'blue', alpha = 0.5, label = 'Sample')
-	plt.xlabel('x_values')	
-	plt.ylabel('y_values')
+	plt.axis([-10.0, 10.0, -10.0, 10.0])
+	plt.xlabel('PC_1')	
+	plt.ylabel('PC_2')
 	plt.legend()
-	plt.title('Transformed samples with class labels')
+	plt.title('Transformed Samples using PCA')
 	
 	plt.grid(True)
 	plt.show()
